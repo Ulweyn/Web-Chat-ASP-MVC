@@ -23,12 +23,34 @@ namespace WCh.Controllers
                 Response.Redirect("/");
             }
 
+            int nUsers = chat.Users.Count();
+            if (nUsers == 0)
+            {
+                chat.Users.Add(new Models.User()
+                {
+                    Id = 1,
+                    Nik = "log",
+                    Password="log"
+                });
+                chat.SaveChanges();
+            }
+
+            int nMessenges = chat.Messanges.Count();
+            if (nMessenges == 0)
+            {
+                chat.Messanges.Add(new Models.Messange()
+                {
+                    ID = 1,
+                    IdUser = 1,
+                    Content = "Hi",
+                    Moment = DateTime.Now
+                });
+                chat.SaveChanges();
+            }
 
 
 
-
-
-            if (Session["userId"] != null)
+                if (Session["userId"] != null)
             {
                 ViewBag.User = GetUserById(Convert.ToInt32(Session["userId"]));
             }
@@ -50,7 +72,7 @@ namespace WCh.Controllers
             }
 
             ViewBag.Users = chat.Users;
-            //ViewBag.Messages = chat.Messages;
+            ViewBag.OutMessanges = from u in chat.Users join m in chat.Messanges on u.Id equals m.IdUser select new Models.OutMessange { Nik = u.Nik, Content = m.Content, Moment = m.Moment };
 
             return View();
         }
@@ -86,6 +108,13 @@ namespace WCh.Controllers
 
             return chat.Users.Find(id);
 
+        }
+        public void AddMessage(Models.Messange messange)
+        {
+            messange.IdUser = Convert.ToInt32(Session["userId"]);
+            messange.Moment = DateTime.Now;
+            chat.Messanges.Add(messange);
+            chat.SaveChanges();
         }
     }
 }

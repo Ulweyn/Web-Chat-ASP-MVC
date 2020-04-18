@@ -1,7 +1,7 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-<div id="auth" >
+<div id="auth">
     @if (ViewBag.User == null)
     {
         <form method="post">
@@ -13,7 +13,41 @@
     }
     else
     {
-        <span> Авторизован как @ViewBag.User.Nik</span><a href="?logout=1">Exit</a>
+        <span> Авторизован как @ViewBag.User.Nik </span><a href="?logout=1"> Exit</a>
 
     }
+
 </div>
+@if (ViewBag.User != null)
+{
+<div style="border:2px solid black; width:700px; height:800px">
+    @foreach (var m in ViewBag.OutMessanges)
+    {
+
+        if (m.Nik == ViewBag.User.Nik)
+        {
+            <div style="background-color:aquamarine">
+                <span>@m.Nik</span><span> </span> <span>@m.Moment</span><br/>
+                <span>@m.Content</span>
+            </div>
+        }
+        else
+        {
+            <div style="background-color:burlywood">
+                <span>@m.Nik</span><span> </span> <span>@m.Moment</span><br/>
+                <span>@m.Content</span>
+            </div>
+        }
+    }
+
+
+
+
+</div>
+    <div style="border:2px solid black; width:700px; height:40px">
+        <form method="post" action="~/Home/AddMessage">
+            Message text:<input name="Content" style="width:600px" />
+            <input type="submit" value="Send"/>
+        </form>
+    </div>
+}
